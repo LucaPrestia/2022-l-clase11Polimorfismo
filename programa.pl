@@ -139,3 +139,37 @@ Hacer el predicado bandaCarita/1, que se cumple para aquella banda con la presen
 - Los show propios cuestan 1 moneda por cada lugar disponible.
 - Los vivos de instagram cuestan 1 moneda por hora por cada 200 seguidores.
 */
+nacionalidad(ana,argentina).
+nacionalidad(belu,argentina).
+nacionalidad(chiqui,argentina).
+nacionalidad(dante,uruguay).
+nacionalidad(eli,brasil).
+
+seguroVa(Persona,masivo(_,_,Lugar)):-
+    nacionalidad(Persona,Pais),
+    Pais=Lugar.
+seguroVa(Persona,vivoIG(_,Duracion,_)):-
+    nacionalidad(Persona,_),
+    Duracion<180.
+
+bandaCarita(Banda):-
+    hace(Banda,Evento),
+    showmascaro(Banda,EventoCaro),
+    forall(showmascaro(_,Evento),esMasCaro(EventoCaro,Evento)).
+
+esMasCaro(EventoCaro,Evento):-
+    precioShow(EventoCaro,PrecioCaro),
+    precioShow(Evento,Precio),
+    PrecioCaro>Precio.
+
+showmascaro(Banda,Evento):-
+    hace(Banda,EventoCaro),
+    forall(hace(Banda,Evento),esMasCaro(EventoCaro,Evento)).
+
+
+precioShow(masivo(_,Participan,_),Resultado):-
+    Resultado is Participan*500.
+precioShow(propio(Lugar),Resultado):-
+    Lugar=Resultado.
+precioShow(vivoIG(_,_,Seguidores),Resultado):-
+    is(Resultado,(Seguidores/200)/60).
